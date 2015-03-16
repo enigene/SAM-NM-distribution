@@ -55,7 +55,18 @@ BEGIN {
 }
 
 END {
-  printf("name\t");
+  printf("%s\t%s", "name", FILENAME);
+  if (groups) {
+    for (p=1; p<pGroupListLen; p++) {
+      printf("\t");
+    }
+  } else {
+    for (p=1; p<pListLen; p++) {
+      printf("\t");
+    }
+  }
+  printf("\n");
+  printf("Mapping identity\t");
   if (groups) {
     for (p=1; p<=pGroupListLen; p++) {
       printf("%s", pGroupListA[p]);
