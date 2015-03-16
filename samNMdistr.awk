@@ -27,6 +27,8 @@ BEGIN {
     for (i in seqA) {
       currSeqBasesA[seqA[i]]++;
     }
+    currSeqBasesA["AT"] = currSeqBasesA["A"] + currSeqBasesA["T"]+0;
+    currSeqBasesA["GC"] = currSeqBasesA["G"] + currSeqBasesA["C"]+0;
   }
 
   if (groups) {
@@ -34,9 +36,8 @@ BEGIN {
       if (percBaseAligned+0 >= pGroupListA[i]+0) {
         a[RNAME][pGroupListA[i]]++;
         if (gc) {
-          for (j in currSeqBasesA) {
-            b[RNAME][pGroupListA[i]][j] += currSeqBasesA[j];
-          }
+          b[RNAME][pGroupListA[i]]["AT"] += currSeqBasesA["AT"];
+          b[RNAME][pGroupListA[i]]["GC"] += currSeqBasesA["GC"];
         }
       }
     }
@@ -46,9 +47,8 @@ BEGIN {
     }
     a[RNAME][percBaseAligned]++;
     if (gc) {
-      for (j in currSeqBasesA) {
-        b[RNAME][percBaseAligned][j] += currSeqBasesA[j];
-      }
+      b[RNAME][percBaseAligned]["AT"] += currSeqBasesA["AT"];
+      b[RNAME][percBaseAligned]["GC"] += currSeqBasesA["GC"];
     }
   }
   delete currSeqBasesA;
@@ -79,11 +79,9 @@ END {
       for (r in a) {
         printf("%s\t", r);
         for (p=1; p<=pGroupListLen; p++) {
-          aBaseGroup = b[r][pGroupListA[p]]["A"]+0;
-          tBaseGroup = b[r][pGroupListA[p]]["T"]+0;
-          gBaseGroup = b[r][pGroupListA[p]]["G"]+0;
-          cBaseGroup = b[r][pGroupListA[p]]["C"]+0;
-          gcContent = ((gBaseGroup + cBaseGroup) / (aBaseGroup + tBaseGroup + gBaseGroup + cBaseGroup) * 100);
+          atBaseGroup = b[r][pGroupListA[p]]["AT"]+0;
+          gcBaseGroup = b[r][pGroupListA[p]]["GC"]+0;
+          gcContent = (gcBaseGroup / (atBaseGroup + gcBaseGroup) * 100);
           printf("%.f", gcContent);
           if (p < pGroupListLen) {
             printf("\t");
@@ -108,11 +106,9 @@ END {
       for (r in a) {
         printf("%s\t", r);
         for (p=1; p<=pListLen; p++) {
-          aBaseGroup = b[r][pListA[p]]["A"]+0;
-          tBaseGroup = b[r][pListA[p]]["T"]+0;
-          gBaseGroup = b[r][pListA[p]]["G"]+0;
-          cBaseGroup = b[r][pListA[p]]["C"]+0;
-          gcContent = ((gBaseGroup + cBaseGroup) / (aBaseGroup + tBaseGroup + gBaseGroup + cBaseGroup) * 100);
+          atBaseGroup = b[r][pListA[p]]["AT"]+0;
+          gcBaseGroup = b[r][pListA[p]]["GC"]+0;
+          gcContent = (gcBaseGroup / (atBaseGroup + gcBaseGroup) * 100);
           printf("%.f", gcContent);
           if (p < pListLen) {
             printf("\t");
