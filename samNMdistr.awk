@@ -97,7 +97,7 @@ END {
           } else {
             gcContent = 0.0;
           }
-          printf("%.f", gcContent);
+          printf("%.2f", gcContent);
           if (p < pGroupListLen) {
             printf("\t");
           }
@@ -128,7 +128,7 @@ END {
           } else {
             gcContent = 0.0;
           }
-          printf("%.f", gcContent);
+          printf("%.2f", gcContent);
           if (p < pListLen) {
             printf("\t");
           }
