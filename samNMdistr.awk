@@ -92,7 +92,11 @@ END {
         for (p=1; p<=pGroupListLen; p++) {
           atBaseGroup = b[r][pGroupListA[p]]["AT"]+0;
           gcBaseGroup = b[r][pGroupListA[p]]["GC"]+0;
-          gcContent = (gcBaseGroup / (atBaseGroup + gcBaseGroup) * 100);
+          if (atBaseGroup + gcBaseGroup > 0) {
+            gcContent = (gcBaseGroup / (atBaseGroup + gcBaseGroup) * 100);
+          } else {
+            gcContent = 0.0;
+          }
           printf("%.f", gcContent);
           if (p < pGroupListLen) {
             printf("\t");
@@ -119,7 +123,11 @@ END {
         for (p=1; p<=pListLen; p++) {
           atBaseGroup = b[r][pListA[p]]["AT"]+0;
           gcBaseGroup = b[r][pListA[p]]["GC"]+0;
-          gcContent = (gcBaseGroup / (atBaseGroup + gcBaseGroup) * 100);
+          if (atBaseGroup + gcBaseGroup > 0) {
+            gcContent = (gcBaseGroup / (atBaseGroup + gcBaseGroup) * 100);
+          } else {
+            gcContent = 0.0;
+          }
           printf("%.f", gcContent);
           if (p < pListLen) {
             printf("\t");
