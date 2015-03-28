@@ -12,46 +12,60 @@ BEGIN {
 
   pGroupList = "98,95,91,All";
   pGroupListLen = split(pGroupList, pGroupListA, ",");
+
+  NMField = 0;
 }
 
 !/^@/ && ($3!="*") {
   RNAME = $3;
   seq = $10;
   SEQLen = length($10);
-  NMTag = substr($(NF-2), 6);
 
-  percBaseAligned = sprintf("%.f", ((SEQLen - NMTag) * 100) / SEQLen);
-
-  if (gc) {
-    split(seq, seqA, "");
-    for (i in seqA) {
-      currSeqBasesA[seqA[i]]++;
-    }
-    currSeqBasesA["AT"] = currSeqBasesA["A"] + currSeqBasesA["T"]+0;
-    currSeqBasesA["GC"] = currSeqBasesA["G"] + currSeqBasesA["C"]+0;
-  }
-
-  if (groups) {
-    for (i in pGroupListA) {
-      if (percBaseAligned+0 >= pGroupListA[i]+0) {
-        a[RNAME][pGroupListA[i]]++;
-        if (gc) {
-          b[RNAME][pGroupListA[i]]["AT"] += currSeqBasesA["AT"];
-          b[RNAME][pGroupListA[i]]["GC"] += currSeqBasesA["GC"];
-        }
+# Search for NM-tag field
+  if (!(NMField)) {
+    for (i=NF; i>10; --i) {
+      if ($i ~ /NM:i/) {
+        NMField = i;
       }
     }
-  } else {
-    if (percBaseAligned+0 < pListA[pListLen-1]+0) {
-      percBaseAligned = "<=90";
-    }
-    a[RNAME][percBaseAligned]++;
-    if (gc) {
-      b[RNAME][percBaseAligned]["AT"] += currSeqBasesA["AT"];
-      b[RNAME][percBaseAligned]["GC"] += currSeqBasesA["GC"];
-    }
   }
-  delete currSeqBasesA;
+
+  if (NMField) {
+    NMTag = substr($(NMField), 6);
+
+    percBaseAligned = sprintf("%.f", ((SEQLen - NMTag) * 100) / SEQLen);
+
+    if (gc) {
+      split(seq, seqA, "");
+      for (i in seqA) {
+        currSeqBasesA[seqA[i]]++;
+      }
+      currSeqBasesA["AT"] = currSeqBasesA["A"] + currSeqBasesA["T"]+0;
+      currSeqBasesA["GC"] = currSeqBasesA["G"] + currSeqBasesA["C"]+0;
+    }
+
+    if (groups) {
+      for (i in pGroupListA) {
+        if (percBaseAligned+0 >= pGroupListA[i]+0) {
+          a[RNAME][pGroupListA[i]]++;
+          if (gc) {
+            b[RNAME][pGroupListA[i]]["AT"] += currSeqBasesA["AT"];
+            b[RNAME][pGroupListA[i]]["GC"] += currSeqBasesA["GC"];
+          }
+        }
+      }
+    } else {
+      if (percBaseAligned+0 < pListA[pListLen-1]+0) {
+        percBaseAligned = "<=90";
+      }
+      a[RNAME][percBaseAligned]++;
+      if (gc) {
+        b[RNAME][percBaseAligned]["AT"] += currSeqBasesA["AT"];
+        b[RNAME][percBaseAligned]["GC"] += currSeqBasesA["GC"];
+      }
+    }
+    delete currSeqBasesA;
+  }
 }
 
 END {
