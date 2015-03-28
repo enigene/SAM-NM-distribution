@@ -4,7 +4,7 @@
 # v1.1, 14 Mar 2015 - Added group option, fixed errors
 # v1.2, 15 Mar 2015 - Added gc option. Prints GC-content distributed by mapping identity.
 #
-# Usage: gawk -v groups=1 -v gc=1 -f samNMdistr.awk input.sam > output.txt
+# Usage: gawk -v groups=1 -v gc=1 -v fn=filename -f samNMdistr.awk input.sam > output.txt
 
 BEGIN {
   pList = "100,99,98,97,96,95,94,93,92,91,<=90";
@@ -68,7 +68,11 @@ BEGIN {
 }
 
 END {
+  if ((FILENAME == "-") && (fn)) {
+    FILENAME = fn;
+  }
   printf("%s\t%s", "name", FILENAME);
+
   if (groups) {
     for (p=1; p<pGroupListLen; p++) {
       printf("\t");
