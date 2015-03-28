@@ -22,16 +22,15 @@ BEGIN {
   SEQLen = length($10);
 
 # Search for NM-tag field
-  if (!(NMField)) {
-    for (i=NF; i>10; --i) {
-      if ($i ~ /NM:i/) {
-        NMField = i;
-      }
+  for (j=NF; j>10; --j) {
+    if ($j ~ /NM:i/) {
+      NMField = j;
+      break;
     }
   }
 
   if (NMField) {
-    NMTag = substr($(NMField), 6);
+    NMTag = substr($NMField, 6);
 
     percBaseAligned = sprintf("%.f", ((SEQLen - NMTag) * 100) / SEQLen);
 
